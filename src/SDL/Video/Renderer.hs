@@ -408,6 +408,17 @@ loadBMP filePath = liftIO $
   throwIfNull "SDL.Video.loadBMP" "SDL_LoadBMP" $
   withCString filePath $ Raw.loadBMP
 
+  -- | Load a surface from a BMP file.
+--
+-- See @<https://wiki.libsdl.org/SDL_SaveBMP SDL_SaveBMP>@ for C documentation.
+saveBMP :: MonadIO m => Surface -> FilePath -> m ()
+saveBMP surface filePath = liftIO $
+  throwIfNeg_ "SDL.Video.saveBMP" "SDL_SaveBMP" $
+  withCString filePath $ \cs -> Raw.saveBMP (surfacePtr surface) cs
+      where
+        surfacePtr (Surface p _) = p
+
+
 newtype SurfacePixelFormat = SurfacePixelFormat (Ptr Raw.PixelFormat)
   deriving (Eq, Typeable)
 
